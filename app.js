@@ -10,6 +10,10 @@
   let toastTimer;
   let diceTimer;
   let audioContext;
+  let backgroundTrack;
+  let backgroundTrackPromise;
+  let backgroundSource;
+  let backgroundGain;
   let tutorialStep = 0;
   let save;
   let viewBeforeDialog = "home";
@@ -83,6 +87,60 @@
     toast.classList.remove("hidden");
     window.clearTimeout(toastTimer);
     toastTimer = window.setTimeout(() => toast.classList.add("hidden"), 3600);
+  }
+
+  function updateSoundToggle() {
+    const button = document.querySelector("#sound-toggle");
+    button.innerHTML = `${save.sound ? "🔊" : "🔇"} <span>Sonido ${save.sound ? "activado" : "desactivado"}</span>`;
+    button.setAttribute("aria-label", `${save.sound ? "Desactivar" : "Activar"} música y efectos de sonido`);
+    button.setAttribute("aria-pressed", String(save.sound));
+  }
+
+  function stopBackgroundMusic() {
+    if (!backgroundSource) return;
+    backgroundSource.onended = null;
+    backgroundSource.stop();
+    backgroundSource.disconnect();
+    backgroundGain.disconnect();
+    backgroundSource = null;
+    backgroundGain = null;
+  }
+
+  async function startBackgroundMusic() {
+    if (!save.sound || backgroundSource) return;
+    try {
+      audioContext ||= new window.AudioContext();
+      if (audioContext.state === "suspended") await audioContext.resume();
+      if (!save.sound || backgroundSource) return;
+      if (!backgroundTrack) {
+        backgroundTrackPromise ||= fetch("musica.mp3")
+          .then((response) => {
+            if (!response.ok) throw new Error(`No se pudo cargar musica.mp3 (HTTP ${response.status}).`);
+            return response.arrayBuffer();
+          })
+          .then((buffer) => audioContext.decodeAudioData(buffer));
+        backgroundTrack = await backgroundTrackPromise;
+        backgroundTrackPromise = null;
+      }
+      if (!save.sound || backgroundSource) return;
+      backgroundSource = audioContext.createBufferSource();
+      backgroundGain = audioContext.createGain();
+      backgroundSource.buffer = backgroundTrack;
+      backgroundSource.loop = true;
+      backgroundGain.gain.value = 0.25;
+      backgroundSource.connect(backgroundGain);
+      backgroundGain.connect(audioContext.destination);
+      backgroundSource.start();
+    } catch (error) {
+      backgroundTrackPromise = null;
+      if (!save.sound) return;
+      save.sound = false;
+      stopBackgroundMusic();
+      updateSoundToggle();
+      persist();
+      console.error("No se pudo reproducir la música de fondo.", error);
+      announce("No se pudo reproducir la música. El juego continúa sin sonido.");
+    }
   }
 
   function goTo(name) {
@@ -476,7 +534,7 @@
 
   function vitaminCard(vitamin, discovered) {
     const locked = !discovered;
-    return `<button class="vitamin-card ${locked ? "locked-card" : ""}" data-vitamin="${vitamin.id}" ${locked ? 'data-locked="true"' : ""} type="button" aria-label="Consultar ficha de ${escapeHtml(vitamin.name)}">
+    return `<button class="vitamin-card ${locked ? "locked-card" : ""}" data-vitamin="${vitamin.id}" ${locked ? 'data-locked="true"' : ""} type="button" aria-label="${locked ? `Ficha bloqueada: ${escapeHtml(vitamin.name)}. Descúbrela jugando.` : `Consultar ficha de ${escapeHtml(vitamin.name)}`}">
       <span class="vitamin-icon">${locked ? "🔒" : vitamin.icon}</span><span class="vitamin-code">${vitamin.id}</span>
       <strong>${escapeHtml(vitamin.name)}</strong><small>${vitamin.type.toUpperCase()}</small>
       <span class="discovery-mark">${locked ? "NO DESCUBIERTA EN MI LABORATORIO" : "DESCUBIERTA"}</span></button>`;
@@ -499,10 +557,10 @@
     grid.innerHTML = list.length ? list.map((vitamin) => vitaminCard(vitamin, save.discoveries.includes(vitamin.id))).join("") : '<div class="empty-state"><span>🧪</span><h2>Aún no has descubierto vitaminas</h2><p>Juega una partida para llenar tu laboratorio.</p><button class="button button-primary" data-action="play">Jugar ahora</button></div>';
   }
 
-  function openVitamin(id, allowLocked = false) {
+  function openVitamin(id) {
     const vitamin = vitaminById(id);
     if (!vitamin) return;
-    if (!allowLocked && !save.discoveries.includes(id)) {
+    if (!save.discoveries.includes(id)) {
       announce("Ficha bloqueada: descubre esta vitamina al responder correctamente en el tablero.");
       return;
     }
@@ -612,6 +670,8 @@
       oscillator.stop(audioContext.currentTime + 0.18);
     } catch (error) {
       save.sound = false;
+      stopBackgroundMusic();
+      updateSoundToggle();
       persist();
       console.error("El audio no está disponible en este navegador.", error);
       announce("El audio no está disponible. El juego continúa sin sonido.");
@@ -679,7 +739,7 @@
     if (answer && !answer.classList.contains("disabled")) answerQuestion(answer);
 
     const vitamin = event.target.closest("[data-vitamin]");
-    if (vitamin) openVitamin(vitamin.dataset.vitamin, currentFilter !== "discovered");
+    if (vitamin) openVitamin(vitamin.dataset.vitamin);
 
     const quizOption = event.target.closest("[data-vitamin-quiz]");
     if (quizOption) {
@@ -702,10 +762,18 @@
 
   document.querySelector("#sound-toggle").addEventListener("click", (event) => {
     save.sound = !save.sound;
-    event.currentTarget.innerHTML = `${save.sound ? "🔊" : "🔇"} <span>Sonido ${save.sound ? "activado" : "desactivado"}</span>`;
+    updateSoundToggle();
     persist();
-    if (save.sound) playTone("correct");
+    if (save.sound) {
+      startBackgroundMusic();
+      playTone("correct");
+    } else {
+      stopBackgroundMusic();
+    }
   });
+
+  document.addEventListener("pointerdown", startBackgroundMusic);
+  document.addEventListener("keydown", startBackgroundMusic);
 
   document.querySelector("#text-dialog").addEventListener("submit", (event) => {
     if (event.target.id !== "alias-form") return;
@@ -717,7 +785,7 @@
   });
 
   document.querySelector("#player-alias").value = save.alias;
-  document.querySelector("#sound-toggle").innerHTML = `${save.sound ? "🔊" : "🔇"} <span>Sonido ${save.sound ? "activado" : "desactivado"}</span>`;
+  updateSoundToggle();
   renderBoard();
   renderVitamins();
   if (save.loadError) announce("No se pudo leer el progreso guardado; puedes seguir jugando y se intentará guardar una partida nueva.");
