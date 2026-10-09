@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 280" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="800" y2="280" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#334B4A"/><stop offset="1" stop-color="#78613E"/>
+    </linearGradient>
+    <linearGradient id="carrot" x1="195" y1="76" x2="264" y2="227" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFC46F"/><stop offset="1" stop-color="#E97838"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="280" rx="18" fill="url(#bg)"/>
+  <circle cx="650" cy="46" r="92" fill="#FFD78F" fill-opacity=".12"/>
+  <path d="M0 220c111-48 199 15 314-5 141-25 223-41 486 15v50H0v-60Z" fill="#283A39" fill-opacity=".7"/>
+  <g opacity=".45" stroke="#F8E3B4" stroke-width="2">
+    <path d="M490 210c18-22 24-43 17-65M521 213c26-27 36-54 28-82M555 211c25-20 35-43 33-68"/>
+    <path d="M484 165c-19-13-20-29-11-40 17 5 23 19 11 40ZM545 151c-5-20 4-31 20-32 7 16 0 28-20 32ZM512 177c-15-14-13-28 0-37 14 9 15 22 0 37Z"/>
+  </g>
+  <g transform="rotate(-12 223 155)">
+    <path d="M197 88c16-9 39-9 54 0l-9 22c-1 57-10 102-19 116-10-12-23-60-21-115l-5-23Z" fill="url(#carrot)"/>
+    <path d="M222 91c-6-18-1-31 11-43 11 17 10 31-11 43ZM218 91c-18-18-19-33-10-46 17 12 22 26 10 46ZM226 91c1-22 11-34 27-37 2 20-7 33-27 37Z" fill="#8CC58B"/>
+    <path d="m207 126 31-6m-30 28 27-6m-24 28 20-5" stroke="#D86A35" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(370 122) rotate(18)">
+    <path d="M0 55c-34-49 0-89 50-77 37 9 44 54 8 80-22 16-43 14-58-3Z" fill="#BA7147"/>
+    <path d="M4 51c-22-34 4-67 39-59 27 6 33 39 7 60-17 14-34 13-46-1Z" fill="#E6A26C"/>
+    <path d="M26 17c12-10 26-6 29 7 3 14-9 25-22 18-11-6-16-17-7-25Z" fill="#F0C594"/>
+  </g>
+  <g transform="translate(580 91)">
+    <path d="M28 92C-10 54 2 12 48 0c41 24 40 68-20 92Z" fill="#5F9C70"/>
+    <path d="M26 85C34 53 38 29 47 8" stroke="#B9D898" stroke-width="4" stroke-linecap="round"/>
+    <path d="m35 54-18-18m22 1 19-18m-29 49-20-5" stroke="#B9D898" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  <g fill="#FFF2CF" fill-opacity=".75"><circle cx="106" cy="74" r="3"/><circle cx="445" cy="65" r="2"/><circle cx="716" cy="177" r="3"/><circle cx="330" cy="220" r="2"/></g>
+</svg>

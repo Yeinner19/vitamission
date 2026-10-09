@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#101729" />
+    <meta name="description" content="VITAMISSION: explora tu organismo, descubre las vitaminas y completa tu misión visual." />
+    <title>VITAMISSION — Tu misión: equilibrio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="data.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#" data-action="home"><span class="brand-mark">✳</span><span>VITA<span class="accent">MISSION</span></span></a>
+      <nav class="main-nav" aria-label="Navegación principal">
+        <button data-action="home" class="nav-button">Inicio</button>
+        <button data-action="game" class="nav-button">Jugar</button>
+        <button data-action="learn" class="nav-button">Aprende</button>
+        <button data-action="vision" class="nav-button">Salud visual</button>
+        <button data-action="ranking" class="nav-button">Ranking</button>
+        <button data-action="profile" class="nav-button">Mi perfil</button>
+      </nav>
+      <button id="sound-toggle" class="icon-button sound-toggle" type="button" aria-label="Activar o desactivar sonido">🔇 <span>Sonido</span></button>
+    </header>
+
+    <main>
+      <section class="screen home-screen" id="screen-home">
+        <div class="home-copy">
+          <p class="eyebrow"><span class="pulse"></span> AVENTURA EDUCATIVA · TEMPORADA 01</p>
+          <h1>Tu misión:<br /><span>mantener tu</span><br />organismo en equilibrio.</h1>
+          <p class="lead">Recorre el tablero, supera retos científicos y descubre cómo las vitaminas ayudan a tu cuerpo.</p>
+          <label class="alias-label" for="player-alias">TU ALIAS DE EXPLORADOR</label>
+          <div class="alias-row"><input id="player-alias" maxlength="18" placeholder="Explorador" autocomplete="nickname" /><button class="button button-primary" data-action="play">Jugar <span>↗</span></button></div>
+          <div class="home-actions">
+            <button class="button button-secondary" data-action="learn">📚 Aprende</button>
+            <button class="button button-secondary" data-action="vision">👁️ Salud visual</button>
+          </div>
+          <div class="home-meta"><span>🎲 Tablero interactivo</span><span>♥ 5 vidas por misión</span><span>💾 Progreso en este dispositivo</span></div>
+        </div>
+        <div class="hero-art">
+          <div class="hero-orbit orbit-a"></div><div class="hero-orbit orbit-b"></div>
+          <div class="viti viti-hero" aria-label="Viti, mascota con forma de ojo"><span class="viti-shine"></span><span class="viti-eye"><i></i></span><span class="viti-smile"></span></div>
+          <div class="hero-food food-one">🥕</div><div class="hero-food food-two">🍊</div><div class="hero-food food-three">🥑</div>
+          <div class="hero-chip">✦ GUÍA VITI</div><div class="hero-caption">¡LISTO PARA EXPLORAR!</div>
+        </div>
+        <div class="home-footer"><span>VITAMISSION · APRENDE JUGANDO</span><span>Esta aventura no sustituye el consejo de profesionales de salud.</span></div>
+      </section>
+
+      <section class="screen game-screen hidden" id="screen-game">
+        <div class="game-heading">
+          <div><p class="eyebrow"><span class="pulse"></span> TABLERO DE EXPLORACIÓN</p><h1>La ruta del equilibrio</h1><p class="muted">Lanza el dado para avanzar. Cada casilla activa un reto diferente.</p></div>
+          <div class="game-stats">
+            <div class="stat"><span>♥ VIDAS</span><strong id="hearts">♥ ♥ ♥ ♥ ♥</strong></div>
+            <div class="stat"><span>✦ PUNTOS</span><strong id="game-score">0</strong></div>
+            <div class="stat"><span>⬡ MONEDAS</span><strong id="game-coins">0</strong></div>
+            <div class="stat"><span>LVL · XP</span><strong id="game-level">1 · 0</strong></div>
+          </div>
+        </div>
+        <div class="game-columns">
+          <section class="board-panel panel">
+            <div class="panel-title"><div><span class="section-number">01</span><h2>Tu recorrido</h2></div><span id="board-progress" class="small-label">0 / 12 CASILLAS</span></div>
+            <div class="route-legend"><span>🍎 Alimentación</span><span>🧪 Absorción</span><span>🩸 Transporte</span><span>🧬 Función</span><span>👁️ Visión</span></div>
+            <div class="game-board" id="game-board" aria-label="Tablero de doce casillas conectadas"></div>
+            <div class="board-controls">
+              <div class="dice" id="dice" aria-live="polite">?</div>
+              <div class="dice-copy"><strong id="board-hint">Tu ficha te espera en la salida.</strong><small>El dado avanza entre 1 y 3 casillas.</small></div>
+              <button id="roll-button" class="button button-primary" data-action="roll">Lanzar dado <span>🎲</span></button>
+            </div>
+            <div class="balance-alert hidden" id="balance-alert" role="status"><span>⚠️</span><div><strong>Equilibrio, explorador</strong><p>A, D, E y K son liposolubles, pero sus riesgos no son iguales. Un exceso de algunas —especialmente por suplementos o exposiciones elevadas— puede ser perjudicial; la alimentación habitual no causa toxicidad automáticamente. Este indicador cuenta hallazgos del juego, no ingesta ni salud real.</p></div><button data-action="dismiss-warning" aria-label="Cerrar aviso">×</button></div>
+          </section>
+          <aside class="side-column">
+            <section class="panel challenge-panel">
+              <div class="panel-title"><div><span class="section-number">02</span><h2>Reto de casilla</h2></div><span id="challenge-category" class="category-pill">SALIDA</span></div>
+              <div class="mascot-line"><div class="viti viti-small" id="viti-face"><span class="viti-eye"><i></i></span><span class="viti-smile"></span></div><p id="viti-message">¡Hola! Soy Viti. Lanza el dado y te acompaño en tu misión.</p></div>
+              <div class="challenge-body" id="challenge-body"><div class="challenge-placeholder"><span>🧭</span><strong>Avanza por el tablero</strong><p>Al caer en una casilla aparecerá aquí un desafío.</p></div></div>
+              <div class="challenge-feedback hidden" id="challenge-feedback" role="status" aria-live="polite"></div>
+              <button id="continue-button" class="button button-primary full-width hidden" data-action="continue">Continuar</button>
+            </section>
+            <section class="panel collection-mini">
+              <div class="panel-title"><div><span class="section-number">03</span><h2>Mi laboratorio</h2></div><button class="text-button" data-action="collection">Ver colección ↗</button></div>
+              <div id="mini-collection" class="mini-collection"></div>
+              <div class="accumulation"><div class="accumulation-label"><span>Hallazgos liposolubles · no mide ingesta</span><strong id="lipo-count">0 / 3</strong></div><div class="meter"><span id="lipo-meter"></span></div></div>
+            </section>
+          </aside>
+        </div>
+        <div class="game-bottom"><span>Progreso guardado localmente en este dispositivo.</span><button class="text-button" data-action="end-run">Terminar partida</button></div>
+      </section>
+
+      <section class="screen content-screen hidden" id="screen-learn">
+        <div class="page-top"><div><p class="eyebrow"><span class="pulse"></span> ENCICLOPEDIA INTERACTIVA</p><h1>Aprende sobre vitaminas</h1><p class="muted">Explora fuentes, funciones y absorción. El ojo destaca cuando existe una relación visual directa o bien descrita.</p></div><div class="collection-count"><strong id="learn-discovered">0 / 10</strong><span>DESCUBIERTAS</span></div></div>
+        <div class="filter-row"><button class="filter-chip selected" data-filter="all" aria-pressed="true">Todas</button><button class="filter-chip" data-filter="liposoluble" aria-pressed="false">Liposolubles</button><button class="filter-chip" data-filter="hidrosoluble" aria-pressed="false">Hidrosolubles</button><button class="filter-chip" data-filter="discovered" aria-pressed="false">Mi laboratorio</button></div>
+        <div class="vitamin-grid" id="vitamin-grid"></div>
+        <div class="science-note">La información es educativa; los síntomas pueden tener múltiples causas y no permiten diagnosticar una deficiencia. Consulta con profesionales de salud.</div>
+      </section>
+
+      <section class="screen vision-screen hidden" id="screen-vision">
+        <div class="vision-header"><p class="eyebrow"><span class="pulse"></span> MISIÓN ESPECIAL</p><h1>VISION <span>MODE</span></h1><p>Descubre nutrientes con funciones relacionadas con la visión, sin confundir funciones directas con asociaciones generales.</p></div>
+        <div class="vision-card">
+          <div class="eye-universe"><div class="eye-orbit"></div><div class="eye-art"><span class="iris"></span></div><span class="orbit-vitamin v-a">A</span><span class="orbit-vitamin v-b2">B₂</span><span class="orbit-vitamin v-c">C</span><span class="orbit-vitamin v-e">E</span></div>
+          <div class="vision-content"><div class="mascot-line"><div class="viti viti-small"><span class="viti-eye"><i></i></span><span class="viti-smile"></span></div><p id="vision-viti-message">¡Bienvenido a Vision Mode! 👁️ Descubre qué vitaminas contribuyen al funcionamiento normal de tus ojos.</p></div>
+            <div id="vision-intro"><h2>Reto: distinguir los vínculos con la visión</h2><p>Selecciona <strong>vitamina A</strong> por su papel directo en el ciclo visual y <strong>riboflavina (B₂)</strong> por su contribución a la visión normal y al metabolismo celular. No son funciones equivalentes.</p><button class="button button-primary" data-action="start-vision">Comenzar reto <span>↗</span></button></div>
+            <div id="vision-game" class="hidden"><div class="vision-options" id="vision-options"></div><button class="button button-primary" data-action="check-vision">Comprobar selección</button><div class="challenge-feedback hidden" id="vision-feedback" role="status"></div><button class="button button-secondary hidden" id="vision-finish" data-action="finish-vision">Completar Vision Mode</button></div>
+            <div id="vision-result" class="hidden"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen content-screen hidden" id="screen-profile">
+        <div class="page-top"><div><p class="eyebrow"><span class="pulse"></span> CENTRO DE EXPLORADOR</p><h1>Mi perfil</h1><p class="muted">Tu avance se guarda solo en este navegador y dispositivo.</p></div><button class="button button-secondary" data-action="edit-alias">Editar alias</button></div>
+        <div class="profile-hero panel"><div class="viti viti-profile"><span class="viti-eye"><i></i></span><span class="viti-smile"></span></div><div><span class="small-label">EXPLORADOR/A</span><h2 id="profile-alias">Explorador</h2><p id="profile-level">Nivel 1 · 0 XP</p></div><div class="profile-total"><strong id="profile-best">0</strong><span>MEJOR PUNTUACIÓN</span></div></div>
+        <div class="profile-grid" id="profile-stats"></div>
+        <section class="panel badge-panel"><div class="panel-title"><div><span class="section-number">✦</span><h2>Insignias</h2></div></div><div id="badge-list" class="badge-list"></div></section>
+        <button class="button button-secondary danger-button" data-action="reset-data">Borrar progreso local</button>
+      </section>
+
+      <section class="screen content-screen hidden" id="screen-ranking">
+        <div class="page-top"><div><p class="eyebrow"><span class="pulse"></span> CLASIFICACIÓN</p><h1>Ranking local</h1><p class="muted">Resultados reales de este dispositivo. No existe una clasificación global ni jugadores inventados.</p></div><span class="local-badge">💾 SOLO ESTE DISPOSITIVO</span></div>
+        <div class="panel ranking-panel"><div class="ranking-head"><span>#</span><span>EXPLORADOR/A</span><span>ACIERTOS</span><span>PUNTOS</span><span>FECHA</span></div><div id="ranking-list"></div><div class="empty-state hidden" id="ranking-empty"><span>🏁</span><h2>Aún no hay partidas</h2><p>Completa una misión y tu resultado aparecerá aquí.</p><button class="button button-primary" data-action="play">Jugar ahora</button></div></div>
+      </section>
+
+      <section class="screen results-screen hidden" id="screen-results">
+        <div class="results-card panel"><div class="confetti" aria-hidden="true">✦　✳　✧　✦　✧</div><p class="eyebrow"><span class="pulse"></span> MISIÓN REGISTRADA</p><h1>¿Qué tan preparado está<br />tu organismo?</h1><div class="result-rank" id="result-rank">¡Expedición completada!</div><div class="result-grid" id="result-grid"></div><p id="result-message" class="result-message"></p><div id="result-badges" class="badge-list"></div><div class="result-actions"><button class="button button-primary" data-action="play">Volver a jugar ↻</button><button class="button button-secondary" data-action="review">Revisar respuestas</button><button class="button button-secondary" data-action="collection">Ver mi colección</button><button class="button button-secondary" data-action="home">Volver al inicio</button></div><div class="review-list hidden" id="review-list"></div></div>
+      </section>
+    </main>
+
+    <dialog id="vitamin-dialog" class="vitamin-dialog"><button class="dialog-close" data-action="close-dialog" aria-label="Cerrar">×</button><div id="vitamin-detail"></div></dialog>
+    <dialog id="text-dialog" class="text-dialog"><button class="dialog-close" data-action="close-dialog" aria-label="Cerrar">×</button><div id="text-dialog-content"></div></dialog>
+    <dialog id="tutorial-dialog" class="text-dialog tutorial-dialog"><div id="tutorial-content"></div><div class="tutorial-actions"><button class="text-button" data-action="tutorial-skip">Omitir tutorial</button><button class="button button-primary" data-action="tutorial-next">Siguiente ↗</button></div></dialog>
+    <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
